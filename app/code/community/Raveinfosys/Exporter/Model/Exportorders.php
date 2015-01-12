@@ -5,7 +5,7 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
     const ENCLOSURE = '"';
     const DELIMITER = ',';
 
-    
+
     public function exportOrders($orders)
     {
         $fileName = 'order_export_'.date("Ymd_His").'.csv';
@@ -22,13 +22,52 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
         return $fileName;
     }
 
-   
+    public function exportPro($order)
+    {
+        $fileName = 'Orders_From_LiveSite.csv';
+        $fp = fopen(Mage::getBaseDir('export'). DS . $fileName, 'w');
+        $this->writeHeadRow($fp);
+        try {
+            $this->writeOrderPro($order, $fp);
+        } catch(Exception $e) {
+            MAge::logException($e);
+        }
+
+        fclose($fp);
+
+        return $fileName;
+    }
+
     protected function writeHeadRow($fp)
     {
         fputcsv($fp, $this->getHeadRowValues(), self::DELIMITER, self::ENCLOSURE);
     }
 
-    
+    protected function writeOrderPro($order, $fp)
+    {
+        $common = $this->getCommonOrderValues($order);
+        $blank = $this->getBlankOrderValues($order);
+        $orderItems = $order->getItems();
+        $itemInc = 0;
+        $data = array();
+        $count = 0;
+        foreach ($orderItems as $item)
+        {
+            if($count==0)
+            {
+                $record = array_merge($common, $this->getOrderItemValues($item, $order, ++$itemInc));
+                fputcsv($fp, $record, self::DELIMITER, self::ENCLOSURE);
+            }
+            else
+            {
+                $record = array_merge($blank, $this->getOrderItemValues($item, $order, ++$itemInc));
+                fputcsv($fp, $record, self::DELIMITER, self::ENCLOSURE);
+            }
+            $count++;
+        }
+
+    }
+
     protected function writeOrder($order, $fp)
     {
         $common = $this->getCommonOrderValues($order);
@@ -51,7 +90,7 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
 				}
 				$count++;
         }
-		
+
     }
 
     protected function getHeadRowValues()
@@ -171,22 +210,22 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
             "product_discount_percent",
             "is_child",
 			"product_option"
-			
+
     	);
     }
 
     //Common orders value
-	
+
     protected function getCommonOrderValues($order)
     {
         $shippingAddress = !$order->getIsVirtual() ? $order->getShippingAddress() : null;
 		$billingAddress = $order->getBillingAddress();
 		if(!$shippingAddress)
 		$shippingAddress = $billingAddress;
-		
+
 		$credit_detail = $this->getCreditMemoDetail($order);
 		return array(
-            $order->getIncrementId(), 
+            $order->getIncrementId(),
             $order->getData('customer_email'),
             $this->formatText($order->getData('customer_firstname')),
             $this->formatText($order->getData('customer_lastname')),
@@ -279,7 +318,7 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
             $this->getPaymentMethod($order)
 			);
     }
-	
+
 	protected function getBlankOrderValues($order)
     {
        return array(
@@ -317,5 +356,5 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
 			 $item->getdata('product_options')
 		);
     }
-	
+
 }

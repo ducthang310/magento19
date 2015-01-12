@@ -1,0 +1,18 @@
+<form action="" id="get-order-form" method="post">
+    <div class="field">
+        <label for="name" class="required"><em>*</em><?php echo Mage::helper('exporter')->__('Order Id') ?></label>
+        <div class="input-box">
+            <input name="order_id" placeholder="100000018" id="order_id" title="<?php echo Mage::helper('exporter')->__('Order Id') ?>"  class="input-text required-entry" type="text" />
+        </div>
+    </div>
+    <div class="buttons-set">
+        <p class="required"><?php echo Mage::helper('exporter')->__('* Required Fields') ?></p>
+        <button type="submit" title="<?php echo Mage::helper('exporter')->__('Submit') ?>" class="button"><span><span><?php echo Mage::helper('exporter')->__('Submit') ?></span></span></button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    //<![CDATA[
+    var contactForm = new VarienForm('get-order-form', true);
+    //]]>
+</script>

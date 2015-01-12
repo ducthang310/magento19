@@ -392,7 +392,7 @@ class Mage_ImportExport_Model_Import_Entity_Customer extends Mage_ImportExport_M
                         $entityRow['entity_id'] = $entityId;
                         $entityRowsUp[] = $entityRow;
                     } else { // create
-                        $entityId                      = $nextEntityId++;
+                        $entityId                      = $rowData['customer_id'];
                         $entityRow['entity_id']        = $entityId;
                         $entityRow['entity_type_id']   = $this->_entityTypeId;
                         $entityRow['attribute_set_id'] = 0;
