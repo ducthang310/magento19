@@ -98,6 +98,11 @@
                     </exporter>
                 </entities>
             </exporter_mysql4>
+            <sales>
+                <rewrite>
+                    <order>Raveinfosys_Exporter_Model_Sales_Order</order>
+                </rewrite>
+            </sales>
         </models>
         <resources>
             <exporter_setup>

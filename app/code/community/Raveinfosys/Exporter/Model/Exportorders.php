@@ -24,9 +24,9 @@ class Raveinfosys_Exporter_Model_Exportorders extends Raveinfosys_Exporter_Model
 
     public function exportPro($order)
     {
-        $fileName = 'Orders_From_LiveSite.csv';
-        $fp = fopen(Mage::getBaseDir('export'). DS . $fileName, 'w');
-        $this->writeHeadRow($fp);
+        $fileName = 'List_Orders.csv';
+        $fp = fopen(Mage::getBaseDir('export'). DS . $fileName, 'a');
+//        $this->writeHeadRow($fp);
         try {
             $this->writeOrderPro($order, $fp);
         } catch(Exception $e) {

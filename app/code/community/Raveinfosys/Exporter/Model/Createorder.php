@@ -276,10 +276,13 @@ class Raveinfosys_Exporter_Model_Createorder extends Mage_Core_Model_Abstract
 		  return $this->setClosed();
 		 
 		  if($sales_order_arr['order_state']=='holded')
-		  return $this->setHolded();
+		  return $this->setHolded($sales_order_arr['order_status']);
 		 
 		  if($sales_order_arr['order_state']=='payment_review')
-		  return $this->setPaymentReview();
+		  return $this->setPaymentReview($sales_order_arr['order_status']);
+
+          if($sales_order_arr['order_state']=='pending_payment ')
+          return $this->setPendingPayment($sales_order_arr['order_status']);
 		 
 		  return 1;
 		 } 
@@ -304,14 +307,15 @@ class Raveinfosys_Exporter_Model_Createorder extends Mage_Core_Model_Abstract
 	   return 1;
 	}
 	
-	public function setHolded()
+	public function setHolded($status)
 	{
+        $status = $status ? $status : true;
 	  try
 	  {
 	    if($this->setProcessing()== 1)
 		{
 		 $order = $this->getOrderModel($this->last_order_increment_id);
-	     $order->setState(Mage_Sales_Model_Order::STATE_HOLDED, true)->save();
+	     $order->setState(Mage_Sales_Model_Order::STATE_HOLDED, $status)->save();
 		 $order->unsetData();
 		 return 1;
 		} 
@@ -319,15 +323,16 @@ class Raveinfosys_Exporter_Model_Createorder extends Mage_Core_Model_Abstract
 	     Mage::helper('exporter')->logException($e,$order->getIncrementId(),'order');
 		 Mage::helper('exporter')->footer();return 1;}
 	}
-	
-	public function setPaymentReview()
+
+	public function setPaymentReview($status)
 	{
+        $status = $status ? $status : true;
 	  try
 	  {
 	    if($this->setProcessing()== 1)
 		{
 		 $order = $this->getOrderModel($this->last_order_increment_id);
-	     $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true)->save();
+	     $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, $status)->save();
 		 $order->unsetData();
 		 return 1;
 		} 
@@ -335,6 +340,23 @@ class Raveinfosys_Exporter_Model_Createorder extends Mage_Core_Model_Abstract
 	     Mage::helper('exporter')->logException($e,$order->getIncrementId(),'order');
 		 Mage::helper('exporter')->footer();return 1;}
 	}
+
+    public function setPendingPayment($status)
+    {
+        $status = $status ? $status : true;
+        try
+        {
+            if($this->setProcessing()== 1)
+            {
+                $order = $this->getOrderModel($this->last_order_increment_id);
+                $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $status)->save();
+                $order->unsetData();
+                return 1;
+            }
+        } catch (Exception $e) {
+            Mage::helper('exporter')->logException($e,$order->getIncrementId(),'order');
+            Mage::helper('exporter')->footer();return 1;}
+    }
 	
 	
 	public function setCanceled()
