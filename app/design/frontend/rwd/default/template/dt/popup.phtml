@@ -1,0 +1,51 @@
+<div class="dt-msg-box">
+    <div id="dt-msg"><?php echo $this->getMsg(); ?></div>
+    <div class="button">
+        <a class="dt-button" id="dt-continue" href="<?php echo $this->getBaseUrl(); ?>"><?php echo $this->__('Continue')?></a>
+        <a class="dt-button" id="dt-checkout" href="javascript:void(0)" onclick="jQuery('.dt-msg-box').hide(); jQuery('.dt-checkout-box').show()"><?php echo $this->__('Checkout Now')?></a>
+    </div>
+</div>
+
+
+<div class="dt-checkout-box" style="display: none">
+    <div class="page-title">
+        <h1><?php echo Mage::helper('dt_quickcheckout')->__('Checkout Now') ?></h1>
+    </div>
+    <form action="<?php echo $this->getUrl('checkout/index/quick'); ?>" id="quickForm" method="post" class="scaffold-form">
+        <div class="fieldset">
+            <h2 class="legend"><?php echo Mage::helper('dt_quickcheckout')->__('Buyer Information') ?></h2>
+            <p class="required"><?php echo Mage::helper('dt_quickcheckout')->__('* Required Fields') ?></p>
+            <ul class="form-list">
+                <li class="fields">
+                    <div class="field">
+                        <label for="name" class="required"><em>*</em><?php echo Mage::helper('dt_quickcheckout')->__('Name') ?></label>
+                        <div class="input-box">
+                            <input name="quick[name]" id="name" title="<?php echo Mage::helper('dt_quickcheckout')->__('Name') ?>" class="input-text required-entry" type="text" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="email" class="required"><em>*</em><?php echo Mage::helper('dt_quickcheckout')->__('Email') ?></label>
+                        <div class="input-box">
+                            <input name="quick[email]" id="email" title="<?php echo Mage::helper('dt_quickcheckout')->__('Email') ?>" class="input-text required-entry validate-email" type="email" autocapitalize="off" autocorrect="off" spellcheck="false" />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <label for="telephone" class="required"><em>*</em><?php echo Mage::helper('dt_quickcheckout')->__('Telephone') ?></label>
+                    <div class="input-box">
+                        <input name="quick[telephone]" id="telephone" title="<?php echo Mage::helper('dt_quickcheckout')->__('Telephone') ?>" value="" class="input-text required-entry" type="tel" />
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="buttons-set">
+            <input type="text" name="quick[hideit]" id="hideit" value="" style="display:none !important;" />
+            <button type="quick[submit]" title="<?php echo Mage::helper('dt_quickcheckout')->__('Submit') ?>" class="button"><span><span><?php echo Mage::helper('dt_quickcheckout')->__('Submit') ?></span></span></button>
+        </div>
+    </form>
+    <script type="text/javascript">
+        //<![CDATA[
+        var quickForm = new VarienForm('quickForm', true);
+        //]]>
+    </script>
+</div>
