@@ -8,3 +8,24 @@
 #jm-slide-images ul.slide-images li .slide-target {width: 206px !important;margin: 0px 0px 10px;}
 #jm-slide-images ul.slide-images li .slide-thumb{text-align: center;width: 100%;max-width: 200px;}
 #jm-slide-images ul.slide-images li .slide-thumb img{width: 150px;height: auto !important;}
+/*#jm_upload_images form input{display: block;}*/
+#jm_upload_images .ajax-upload-dragdrop span, #jm_upload_images > div:last-of-type, .ajax-file-upload-container {display: none}
+#jm_upload_images .ajax-file-upload {
+    background: #ffac47 url("../../default/default/images/btn_bg.gif") repeat-x scroll 0 100%;
+    border-color: #ed6502 #a04300 #a04300 #ed6502;
+    border-style: solid;
+    border-width: 1px;
+    color: #fff;
+    cursor: pointer;
+    font: bold 12px arial,helvetica,sans-serif;
+    padding: 1px 7px 2px;
+    text-align: center !important;
+    white-space: nowrap;
+    width: 70px;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-left: 196px;
+}
+
+.jm-delete-image { margin-top: 10px}

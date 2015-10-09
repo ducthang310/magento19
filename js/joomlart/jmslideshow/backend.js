@@ -110,6 +110,7 @@
         var titles = new Array();
         var links = new Array();
         var targets = new Array();
+        var sorts = new Array();
         var desc = new Array();
 
         //Get data from images form
@@ -125,6 +126,9 @@
         $('select[name="link_targets[]"] option:selected').each(function() {
             targets.push($(this).attr("value"));
         });
+        $('input[name="slide_sorts[]"]').each(function() {
+            sorts.push($(this).val());
+        });
         $('textarea[name="slide_desc[]"]').each(function() {
             desc.push($(this).val());
         });
@@ -132,7 +136,7 @@
 
         //build short code
         $.each(images, function( index, value ) {
-            shortCode += '[desc img="'+images[index]+'" url="'+links[index]+'" title="'+titles[index]+'" target="'+targets[index]+'"]\n';
+            shortCode += '[desc img="'+images[index]+'" url="'+links[index]+'" title="'+titles[index]+'" target="'+targets[index]+'" sort="'+sorts[index]+'"]\n';
             shortCode += desc[index] + '\n';
             shortCode += '[/desc]'+"\n\r";
         });
@@ -162,3 +166,40 @@
     }
 
 })(jQuery);
+
+function jmDeleteImage(imageName, imageID) {
+    if (imageName !== '') {
+        jQuery.ajax({
+            url: deleteImagesUrl,
+            type: 'POST',
+            data: {
+                name: imageName,
+                folder_path: jQuery("#joomlart_jmslideshow_joomlart_jmslideshow_folder").val(),
+                form_key: window.FORM_KEY,
+                website: websiteCode,
+                store: storeCode
+            },
+            dataType: 'json',
+            async: true,
+            beforeSend: function () {
+                jQuery("#loading-mask").css({"width": jQuery(window).width() + "px", "height": jQuery(window).height() + "px", "top": "0px", "z-index": "9999"});
+                //of browser scroll
+                jQuery("body").css({ overflow: 'hidden' });
+                jQuery("#loading-mask").show();
+            },
+            success: function (response) {
+                jQuery("#loading-mask").css({"width": "auto", "height": "auto", "top": "auto"});
+                //on browser scroll
+                jQuery("body").css({ overflow: 'inherit' });
+                jQuery("#loading-mask").hide();
+
+                if (response.error) {
+                    alert('Has error occur when delete this image.');
+                } else {
+                    jQuery('#' + imageID).remove();
+                    alert(response.message);
+                }
+            }
+        });
+    }
+}

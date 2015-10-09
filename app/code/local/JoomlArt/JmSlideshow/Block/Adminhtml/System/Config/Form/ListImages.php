@@ -9,6 +9,7 @@ class JoomlArt_JmSlideshow_Block_Adminhtml_System_Config_Form_ListImages extends
 
 		//script on form back end
 		$output .= '<script type="text/javascript" src="'. $this->getJsUrl('joomlart/jmslideshow/backend.js') .'"></script>';
+		$output .= '<script type="text/javascript" src="'. $this->getSkinUrl('js/jquery.uploadfile.js') .'"></script>';
 
         $output .= '<input type="hidden" id="latest_image_folder" name="latest_image_folder" value="" />';
         $output .= '<div id="jm-slide-images" style="display: none;"></div>';

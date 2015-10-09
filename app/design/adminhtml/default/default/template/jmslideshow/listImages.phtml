@@ -4,16 +4,17 @@ $images = isset($slides["images"]) ? $slides["images"] : array();
 $items = isset($slides["items"]) ? $slides["items"] : array();
 $titles = isset($slides["titles"]) ? $slides["titles"] : array();
 $urls = isset($slides["urls"]) ? $slides["urls"] : array();
+$sorts = isset($slides["sorts"]) ? $slides["sorts"] : array();
 $targets = isset($slides["targets"]) ? $slides["targets"] : array();
 ?>
-
+<div href="javascript:void(0)" id="jm_upload_images">Upload Images</div>
 <?php if($images): ?>
 
     <h3> <?php echo $this->__("Slide Show Images");?>:</h3>
     <form id="slide-images-form">
     <ul class="slide-images">
         <?php foreach($items as $key => $item):?>
-            <li>
+            <li id="jm_image_<?php echo $key; ?>">
                 <div class="slide-thumb">
                     <?php echo $item['thumb']; ?>
                 </div>
@@ -24,8 +25,10 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
                     <option value="_self" <?php if($targets[$key] == '_self') echo 'selected="selected"'; ?> > <?php echo $this->__('Open as default')?></option>
                     <option value="_blank" <?php if($targets[$key] == '_blank') echo 'selected="selected"'; ?>><?php echo $this->__('Open new window or tab')?></option>
                 </select>
+                <input class="slide-sort" placeholder="<?php echo $this->__('Sort'); ?>" name="slide_sorts[]" value="<?php echo isset($sorts[$key]) ? $sorts[$key] : ''; ?>" />
                 <?php $caption = isset($item['caption']) ? str_replace("<br />", "\n", trim($item['caption'])) : ''; ?>
                 <textarea class="slide-desc" placeholder="<?php echo $this->__('Description'); ?>" name="slide_desc[]"><?php echo $caption; ?></textarea>
+                <button type="button" class="jm-delete-image" onclick="jmDeleteImage('<?php echo $images[$key]?>', 'jm_image_<?php echo $key; ?>')"><?php echo $this->__('Delete')?></button>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -33,3 +36,46 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
 <?php else: ?>
     <span class="images-not-found"> <?php echo $this->__("Not found images");?>:</span>
 <?php endif; ?>
+<script type="text/javascript">
+    (function ($) {
+        $(document).ready(function(){
+            //Check format for Sort-Input
+            $('.slide-sort').keypress(function (e) {
+                var regex = new RegExp("^[0-9]+$");
+                var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+
+                var valid_keyCode = [8,37,38,39,40,46];
+                if (regex.test(str) || (-1 < valid_keyCode.indexOf(e.keyCode))) {
+                    return true;
+                }
+                e.preventDefault();
+                return false;
+            });
+
+            $('.slide-sort').change(function(){
+                if (isNaN($(this).val())) {
+                    // Value of Sort isn't a number
+                    $(this).val('');
+                    alert('Please enter a number.');
+                }
+            });
+
+            $("#jm_upload_images").uploadFile({
+                url:uploadImagesUrl,
+                fileName:"jm_images",
+                allowedTypes:"jpg,png,gif",
+                multiple: true,
+                formData: {
+                    folder_path: jQuery("#joomlart_jmslideshow_joomlart_jmslideshow_folder").val(),
+                    form_key: window.FORM_KEY,
+                    website: websiteCode,
+                    store: storeCode
+                },
+                onSuccess:function(files,data,xhr)
+                {
+                    location.reload();
+                }
+            });
+        });
+    })(jQuery);
+</script>

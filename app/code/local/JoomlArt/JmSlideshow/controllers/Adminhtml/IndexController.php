@@ -37,4 +37,66 @@ class JoomlArt_JmSlideshow_Adminhtml_IndexController extends Mage_Adminhtml_Cont
             }
         }
     }
+
+    /**
+     * Ajax delete images from folder path
+     */
+    public function deleteImagesAction()
+    {
+        $result = array(
+            'error' => false
+        );
+        if( Mage::app()->getRequest()->isAjax() ){
+            $imageName = Mage::app()->getRequest()->getPost('name', '');
+            $folderPath = Mage::app()->getRequest()->getPost('folder_path');
+            $imagePath = Mage::getBaseDir() . DS . $folderPath . DS . $imageName;
+
+            try {
+                unlink($imagePath);
+                $result['message'] = 'The image has been deleted.';
+            } catch (Exception $e) {
+                $result['error'] = true;
+                $result['message'] = $e->getMessage();
+            }
+        }
+
+        $this->getResponse()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setBody(json_encode($result));
+    }
+
+    /**
+     * Ajax upload images from folder path
+     */
+    public function uploadImagesAction()
+    {
+        $result = array(
+        );
+
+        $folderPath = Mage::app()->getRequest()->getPost('folder_path');
+        $output_dir = Mage::getBaseDir() . DS . $folderPath;
+
+        try {
+            if(!is_array($_FILES['jm_images']["name"]))
+            {
+                $fileName = $_FILES['jm_images']["name"];
+                move_uploaded_file($_FILES['jm_images']["tmp_name"],$output_dir . DS . $fileName);
+                $result[]= $fileName;
+            }
+            else  //Multiple files, file[]
+            {
+                $fileCount = count($_FILES['jm_images']["name"]);
+                for($i=0; $i < $fileCount; $i++)
+                {
+                    $fileName = $_FILES['jm_images']["name"][$i];
+                    move_uploaded_file($_FILES['jm_images']["tmp_name"][$i],$output_dir.$fileName);
+                    $result[]= $fileName;
+                }
+            }
+        } catch (Exception $e) {
+            Mage::logException($e->getMessage());
+        }
+
+        $this->getResponse()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setBody(json_encode($result));
+    }
 }

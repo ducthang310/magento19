@@ -134,6 +134,7 @@ class JoomlArt_JmSlideshow_Helper_Data extends Mage_Core_Helper_Abstract
         $titles = array();
         $alts = array();
         $targets = array();
+        $sorts = array();
 
         if ($configs['source'] == 'products')
         {
@@ -216,6 +217,7 @@ class JoomlArt_JmSlideshow_Helper_Data extends Mage_Core_Helper_Abstract
 
             if ($listImages && is_array($listImages))
             {
+                $tmpOrderNull = $tmpOrder = array();
                 foreach ($listImages as $key => $img) {
 
                     $imageArray[] = $configs['folder'] . '/' . $img;
@@ -230,6 +232,7 @@ class JoomlArt_JmSlideshow_Helper_Data extends Mage_Core_Helper_Abstract
                     $titles[$key] = (isset($descriptionArray[$img]) && isset($descriptionArray[$img]['title'])) ? $descriptionArray[$img]['title'] : '';
                     $alts[$key] = (isset($descriptionArray[$img]) && isset($descriptionArray[$img]['alt'])) ? $descriptionArray[$img]['alt'] : '';
                     $targets[$key] = (isset($descriptionArray[$img]) && isset($descriptionArray[$img]['target'])) ? $descriptionArray[$img]['target'] : '_self';
+                    $sorts[$key] = (isset($descriptionArray[$img]) && isset($descriptionArray[$img]['sort'])) ? $descriptionArray[$img]['sort'] : '';
                 }
 
                 $mainsThumbs = $this->buildThumbnail($imageArray, $configs['mainWidth'], $configs['mainHeight'], $configs['thumbImgMode'], $configs['useRatio']);
@@ -271,6 +274,13 @@ class JoomlArt_JmSlideshow_Helper_Data extends Mage_Core_Helper_Abstract
                     //description of thumbnail
                     if (isset($thumbCaptionsArray[$key]) && $thumbCaptionsArray[$key])
                         $items[$key]['thumb_caption'] = $thumbCaptionsArray[$key];
+
+                    //Check order of item for sorting
+                    if ($sorts[$key] === '') {
+                        $tmpOrderNull[] = $key;
+                    } else {
+                        $tmpOrder[$sorts[$key]] = $key;
+                    }
                 }
             }
         }
@@ -279,6 +289,11 @@ class JoomlArt_JmSlideshow_Helper_Data extends Mage_Core_Helper_Abstract
         $data['titles'] = $titles;
         $data['urls'] = $urls;
         $data['targets'] = $targets;
+        $data['sorts'] = $sorts;
+
+        ksort($tmpOrder);
+        $data['sort_order'] = array_merge($tmpOrder, $tmpOrderNull);
+
         if(isset($listImages))
             $data['images'] = $listImages;
 
@@ -451,7 +466,8 @@ class JoomlArt_JmSlideshow_Helper_Data extends Mage_Core_Helper_Abstract
                 $url = isset($params['url']) ? trim($params['url']) : '';
                 $alt = isset($params['alt']) ? trim($params['alt']) : '';
                 $target = isset($params['target']) ? trim($params['target']) : '_self';
-                $descriptionArray[$img] = array('url' => $url, 'caption' => str_replace("\n", "<br />", trim($match[2])), 'title' => $title, 'alt' => $alt, 'target'=>$target);
+                $sort = isset($params['sort']) ? trim($params['sort']) : '';
+                $descriptionArray[$img] = array('url' => $url, 'caption' => str_replace("\n", "<br />", trim($match[2])), 'title' => $title, 'alt' => $alt, 'target'=>$target, 'sort' => $sort);
             }
         }
 

@@ -14,5 +14,7 @@ if (Mage::getStoreConfig("web/secure/use_in_adminhtml")) {
     var baseUrl ='<?php echo $baseUrl; ?>';
     var websiteCode = '<?php echo $websiteCode ?>';
     var storeCode = '<?php echo $storeCode ?>';
-    var loadImagesUrl = '<?php echo Mage::helper('adminhtml')->getUrl('jmslideshow/adminhtml_index/listImages'); ?>'
+    var loadImagesUrl = '<?php echo Mage::helper('adminhtml')->getUrl('jmslideshow/adminhtml_index/listImages'); ?>';
+    var deleteImagesUrl = '<?php echo Mage::helper('adminhtml')->getUrl('jmslideshow/adminhtml_index/deleteImages'); ?>';
+    var uploadImagesUrl = '<?php echo Mage::helper('adminhtml')->getUrl('jmslideshow/adminhtml_index/uploadImages'); ?>';
 </script>

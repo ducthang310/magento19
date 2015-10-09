@@ -100,6 +100,18 @@ class JoomlArt_JmSlideshow_Block_List extends Mage_Catalog_Block_Product_Abstrac
         }else{
             //Get slide data
             $slideData = Mage::helper('joomlart_jmslideshow/data')->getSlideShowData($this->_configs);
+
+            $tmpData = array();
+            foreach ($slideData['sort_order'] as $newOrder => $oldOrder) {
+                $tmpData['items'][$newOrder] = $slideData['items'][$oldOrder];
+                $tmpData['titles'][$newOrder] = $slideData['titles'][$oldOrder];
+                $tmpData['urls'][$newOrder] = $slideData['urls'][$oldOrder];
+                $tmpData['targets'][$newOrder] = $slideData['targets'][$oldOrder];
+                $tmpData['sorts'][$newOrder] = $slideData['sorts'][$oldOrder];
+                $tmpData['images'][$newOrder] = $slideData['images'][$oldOrder];
+            }
+            $slideData = $tmpData;
+
             if ($useCache){
                 try{
                     $tags = array(self::CACHE_TAG);
