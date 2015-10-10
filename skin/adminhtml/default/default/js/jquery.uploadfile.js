@@ -63,6 +63,7 @@
         }
 
         function l(a, t, r) {
+
             for (var o = 0; o < r.length; o++)if (n(t, a, r[o].name))if (a.allowDuplicates || !d(t, r[o].name))if (-1 != a.maxFileSize && r[o].size > a.maxFileSize)a.showError && e("<div class='" + a.errorClass + "'><b>" + r[o].name + "</b> " + a.sizeErrorStr + s(a.maxFileSize) + "</div>").appendTo(t.errorLog); else if (-1 != a.maxFileCount && t.selectedFiles >= a.maxFileCount)a.showError && e("<div class='" + a.errorClass + "'><b>" + r[o].name + "</b> " + a.maxFileCountErrorStr + a.maxFileCount + "</div>").appendTo(t.errorLog); else {
                 t.selectedFiles++, t.existingFileNames.push(r[o].name);
                 var l = a, p = new FormData, u = a.fileName.replace("[]", "");
@@ -76,7 +77,13 @@
                 C.appendTo("body");
                 var b = [];
                 b.push(r[o].name), v(C, l, w, b, t, r[o]), t.fileCounter++
-            } else a.showError && e("<div class='" + a.errorClass + "'><b>" + r[o].name + "</b> " + a.duplicateErrorStr + "</div>").appendTo(t.errorLog); else a.showError && e("<div class='" + a.errorClass + "'><b>" + r[o].name + "</b> " + a.extErrorStr + a.allowedTypes + "</div>").appendTo(t.errorLog)
+                jmTotalFiles +=1;
+            } else {
+                a.showError && e("<div class='" + a.errorClass + "'><b>" + r[o].name + "</b> " + a.duplicateErrorStr + "</div>").appendTo(t.errorLog);
+            } else {
+                a.showError && e("<div class='" + a.errorClass + "'><b>" + r[o].name + "</b> " + a.extErrorStr + a.allowedTypes + "</div>").appendTo(t.errorLog)
+                alert(r[o].name + a.extErrorStr + a.allowedTypes);
+            }
         }
 
         function n(e, a, t) {
@@ -172,10 +179,6 @@
         }
 
         function f(a, t) {
-            jQuery("#loading-mask").css({"width": jQuery(window).width() + "px", "height": jQuery(window).height() + "px", "top": "0px", "z-index": "9999"});
-            //of browser scroll
-            jQuery("body").css({ overflow: 'hidden' });
-            jQuery("#loading-mask").show();
             return this.statusbar = e("<div class='ajax-file-upload-statusbar'></div>").width(t.statusBarWidth), this.preview = e("<img class='ajax-file-upload-preview' />").width(t.previewWidth).height(t.previewHeight).appendTo(this.statusbar).hide(), this.filename = e("<div class='ajax-file-upload-filename'></div>").appendTo(this.statusbar), this.progressDiv = e("<div class='ajax-file-upload-progress'>").appendTo(this.statusbar).hide(), this.progressbar = e("<div class='ajax-file-upload-bar'></div>").appendTo(this.progressDiv), this.abort = e("<div>" + t.abortStr + "</div>").appendTo(this.statusbar).hide(), this.cancel = e("<div>" + t.cancelStr + "</div>").appendTo(this.statusbar).hide(), this.done = e("<div>" + t.doneStr + "</div>").appendTo(this.statusbar).hide(), this.download = e("<div>" + t.downloadStr + "</div>").appendTo(this.statusbar).hide(), this.del = e("<div>" + t.deletelStr + "</div>").appendTo(this.statusbar).hide(), this.abort.addClass("ajax-file-upload-red"), this.done.addClass("ajax-file-upload-green"), this.download.addClass("ajax-file-upload-green"), this.cancel.addClass("ajax-file-upload-red"), this.del.addClass("ajax-file-upload-red"), this
         }
 
@@ -209,6 +212,12 @@
                     }), !1
                 },
                 beforeSend: function (e) {
+
+                    jQuery("#loading-mask").css({"width": jQuery(window).width() + "px", "height": jQuery(window).height() + "px", "top": "0px", "z-index": "9999"});
+                    //of browser scroll
+                    jQuery("body").css({ overflow: 'hidden' });
+                    jQuery("#loading-mask").show();
+
                     s.progressDiv.show(), s.cancel.hide(), s.done.hide(), o.showAbort && (s.abort.show(), s.abort.click(function () {
                         p(n, l), e.abort(), n.selectedFiles -= l.length, o.onAbort.call(n, l, s)
                     })), s.progressbar.width(a.formdata ? "1%" : "5%")
@@ -234,6 +243,12 @@
                 },
                 error: function (e, a, r) {
                     s.cancel.remove(), D.pop(), s.abort.hide(), "abort" == e.statusText ? (s.statusbar.hide("slow").remove(), c(o, n)) : (o.onError.call(this, l, a, r, s), o.showStatusAfterError ? (s.progressDiv.hide(), s.statusbar.append("<span class='" + o.errorClass + "'>ERROR: " + r + "</span>")) : (s.statusbar.hide(), s.statusbar.remove()), n.selectedFiles -= l.length), t.remove()
+                },
+                complete: function (a, b, c) {
+                    jmCurrentFiles += 1;
+                    if (jmCurrentFiles == jmTotalFiles) {
+                        location.reload();
+                    }
                 }
             };
             o.showPreview && null != d && "image" == d.type.toLowerCase().split("/").shift() && u(d, s.preview), o.autoSubmit ? (t.ajaxForm(h), x.push(t), r()) : (o.showCancel && (s.cancel.show(), s.cancel.click(function () {

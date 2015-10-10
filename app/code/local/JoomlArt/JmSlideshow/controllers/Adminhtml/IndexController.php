@@ -69,13 +69,20 @@ class JoomlArt_JmSlideshow_Adminhtml_IndexController extends Mage_Adminhtml_Cont
      */
     public function uploadImagesAction()
     {
-        $result = array(
-        );
+        $result = array();
 
         $folderPath = Mage::app()->getRequest()->getPost('folder_path');
         $output_dir = Mage::getBaseDir() . DS . $folderPath;
 
         try {
+            // Check exist folder & create new
+            if (!is_dir($output_dir)) {
+                mkdir($output_dir, 0777, true);
+            }
+
+            // Save new folder path
+            Mage::getConfig()->saveConfig('joomlart_jmslideshow/joomlart_jmslideshow/folder', $folderPath);
+
             if(!is_array($_FILES['jm_images']["name"]))
             {
                 $fileName = $_FILES['jm_images']["name"];

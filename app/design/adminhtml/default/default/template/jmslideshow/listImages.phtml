@@ -37,6 +37,9 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
     <span class="images-not-found"> <?php echo $this->__("Not found images");?>:</span>
 <?php endif; ?>
 <script type="text/javascript">
+    var jmTotalFiles = 0;
+    var jmCurrentFiles = 0;
+    var valOfSort = [];
     (function ($) {
         $(document).ready(function(){
             //Check format for Sort-Input
@@ -57,6 +60,25 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
                     // Value of Sort isn't a number
                     $(this).val('');
                     alert('Please enter a number.');
+                    return false;
+                }
+
+                if($.inArray($(this).val(), valOfSort) !== -1){
+                    alert('The sort number is already exists. Please type again.');
+                    $(this).val('');
+                } else {
+                    valOfSort = [];
+                    $('.slide-sort').each(function(){
+                        if ($(this).val() !== '') {
+                            valOfSort.push($(this).val());
+                        }
+                    });
+                }
+            });
+
+            $('.slide-sort').each(function(){
+                if ($(this).val() !== '') {
+                    valOfSort.push($(this).val());
                 }
             });
 
@@ -70,10 +92,6 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
                     form_key: window.FORM_KEY,
                     website: websiteCode,
                     store: storeCode
-                },
-                onSuccess:function(files,data,xhr)
-                {
-                    location.reload();
                 }
             });
         });
