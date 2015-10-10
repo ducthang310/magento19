@@ -59,6 +59,7 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
                 if (isNaN($(this).val())) {
                     // Value of Sort isn't a number
                     $(this).val('');
+                    resetValOfSort();
                     alert('Please enter a number.');
                     return false;
                 }
@@ -66,21 +67,12 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
                 if($.inArray($(this).val(), valOfSort) !== -1){
                     alert('The sort number is already exists. Please type again.');
                     $(this).val('');
-                } else {
-                    valOfSort = [];
-                    $('.slide-sort').each(function(){
-                        if ($(this).val() !== '') {
-                            valOfSort.push($(this).val());
-                        }
-                    });
                 }
+                
+                resetValOfSort();
             });
 
-            $('.slide-sort').each(function(){
-                if ($(this).val() !== '') {
-                    valOfSort.push($(this).val());
-                }
-            });
+            resetValOfSort();
 
             $("#jm_upload_images").uploadFile({
                 url:uploadImagesUrl,
@@ -95,5 +87,14 @@ $targets = isset($slides["targets"]) ? $slides["targets"] : array();
                 }
             });
         });
+
+        function resetValOfSort() {
+            valOfSort = [];
+            $('.slide-sort').each(function(){
+                if ($(this).val() !== '') {
+                    valOfSort.push($(this).val());
+                }
+            });
+        }
     })(jQuery);
 </script>
